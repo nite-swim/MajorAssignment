@@ -16,7 +16,7 @@ public class userRewardData {
         {
             System.out.println("Hi " + userName + " Welcome Task List");
             constructStatus.constructData.forEach((k,v) -> {
-                System.out.println("任务序号1: " + k + "\t任务名称\t" + v.frontShowData + "\t奖励内容\t" + v.RewardData + "\n");
+                System.out.println("任务序号: " + k + "\t任务名称\t" + v.frontShowData + "\t奖励内容\t" + v.RewardData + "\n");
             });
         }
         else {
