@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 
 public class userLoadSystem {
+    public static int loginStatusData = 0;
+    private static String userName = "";
     private static HashMap<String, String> password = new HashMap<String, String>();
 
     private static void setPassWd(String userName, String passWd){
@@ -31,6 +33,13 @@ public class userLoadSystem {
         }
     }
 
+    public static void setUserName(String user) {
+        userName = user;
+    }
+    public static String getUserName(){
+        return userName;
+    }
+
     public static void authenticationPasswd(){
         System.out.print("Please Enter UserName And PassWd \n");
         Scanner scanner = new Scanner(System.in);
@@ -54,11 +63,12 @@ public class userLoadSystem {
             System.out.println("passWd:" + passWd);
 
             statusNumber = startPassWd(userName, passWd);
+
+
         }
+        setUserName(userName);
         scanner.close();
-    }
 
-    public static void main(String[] args){
-
+        loginStatusData = 1;
     }
 }
