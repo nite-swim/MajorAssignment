@@ -1,6 +1,7 @@
 package com.itcast.service.Impl;
 
 import com.itcast.mapper.TaskMapper;
+import com.itcast.pojo.Reward;
 import com.itcast.pojo.Task;
 import com.itcast.pojo.TaskUserLevel;
 import com.itcast.service.TaskService;
@@ -175,6 +176,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public String addTask(Task task) {
         taskMapper.addTask(task.getTaskName(), task.getTaskType(), task.getTaskReward(),task.getUserLevel(), task.getTaskGoal(), task.getTime());
+        taskMapper.addTaskUserLevel(task.getUserLevel(), task.getTaskName(), task.getTaskType(), task.getTaskReward());
         System.out.println("请输入金币奖励数目：");
         Scanner sc = new Scanner(System.in);
         int rewardGold = sc.nextInt();

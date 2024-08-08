@@ -56,4 +56,8 @@ public interface TaskMapper {
 
     @Insert("insert into reward (task_name, reward_gold, reward_red_pocket) values (#{taskName}, #{rewardGold}, #{rewardRedPocket})")
     void addReward(@Param("taskName") String taskName, @Param("rewardGold") int rewardGold, @Param("rewardRedPocket") int rewardRedPocket);
+
+
+    @Insert("insert into task_userlevel (user_level, task_name, task_type, task_reward) values (#{userLevel}, #{taskName}, #{taskType}, #{taskReward})")
+    void addTaskUserLevel(@Param("userLevel") int userLevel, @Param("taskName")String taskName, @Param("taskType") String taskType, @Param("taskReward") String taskReward);
 }
