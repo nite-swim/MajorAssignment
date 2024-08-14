@@ -1,9 +1,9 @@
 package com.itcast.service.Impl;
 
 import com.itcast.mapper.TaskMapper;
-import com.itcast.pojo.Reward;
 import com.itcast.pojo.Task;
 import com.itcast.pojo.TaskUserLevel;
+import com.itcast.service.RedisService;
 import com.itcast.service.TaskService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,8 @@ public class TaskServiceImpl implements TaskService {
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private RedisTemplate<String, TaskUserLevel> redisTemplate;
+    @Resource
+    private RedisService<String,String> redisService;
 
     /**
      * 根据任务id查询对应的用户等级
@@ -62,7 +64,7 @@ public class TaskServiceImpl implements TaskService {
     public List<String> getTaskByUserId(int userId) {
         List<String> resultList = new ArrayList<>();
         int level = getUserLevelById(userId);
-        if (level>5){
+        if (level> getMaxTaskLevel()){
             resultList.add((String) stringRedisTemplate.opsForHash().get("user:level:" + "5", "5"));
             return resultList;
         }else {
@@ -118,7 +120,7 @@ public class TaskServiceImpl implements TaskService {
             if (userLevel < 3){
                 //gold+1
                 taskMapper.updateGoldPrimary(userId);
-            } else if (2 < userLevel && userLevel < 5) {
+            } else if (2 < userLevel && userLevel < getMaxTaskLevel()) {
                 //gold+2, redPocket+1
                 taskMapper.updateGoldIntermediate(userId);
                 taskMapper.updateRedPocket(1,userId);
@@ -134,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
             if (userLevel < 3){
                 //gold+1
                 taskMapper.updateGoldPrimary(userId);
-            }else if (2 < userLevel && userLevel < 5) {
+            }else if (2 < userLevel && userLevel < getMaxTaskLevel()) {
                 //gold+2
                 taskMapper.updateGoldIntermediate(userId);
             }else {
@@ -184,5 +186,14 @@ public class TaskServiceImpl implements TaskService {
         int rewardRedPocket = sc.nextInt();
         taskMapper.addReward(task.getTaskName(), rewardGold, rewardRedPocket);
         return "OK";
+    }
+
+    public int getMaxTaskLevel(){
+        if (redisService.getValue("maxUserLevel") != null){
+            return Integer.parseInt(redisService.getValue("maxUserLevel"));
+        }else {
+            redisService.setValue("maxUserLevel", String.valueOf(taskMapper.getMaxTaskLevel()));
+        }
+        return taskMapper.getMaxTaskLevel();
     }
 }

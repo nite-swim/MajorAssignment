@@ -60,4 +60,7 @@ public interface TaskMapper {
 
     @Insert("insert into task_userlevel (user_level, task_name, task_type, task_reward) values (#{userLevel}, #{taskName}, #{taskType}, #{taskReward})")
     void addTaskUserLevel(@Param("userLevel") int userLevel, @Param("taskName")String taskName, @Param("taskType") String taskType, @Param("taskReward") String taskReward);
+
+    @Select("select max(distinct (user_level)) from task;")
+    int getMaxTaskLevel();
 }

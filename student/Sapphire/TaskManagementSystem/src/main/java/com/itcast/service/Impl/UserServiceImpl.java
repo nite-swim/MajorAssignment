@@ -7,8 +7,11 @@ import com.itcast.pojo.Reward;
 import com.itcast.pojo.Task;
 import com.itcast.pojo.TaskInstance;
 import com.itcast.pojo.User;
+import com.itcast.service.RedisService;
 import com.itcast.service.UserService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private RewardMapper rewardMapper;
+    @Resource
+    private RedisService<String,String> redisService;
 
     @Override
     public User getUserByName(String username) {
@@ -43,8 +48,8 @@ public class UserServiceImpl implements UserService {
             String username = scanner.nextLine();
             User user = userMapper.getUserByName(username);
             int level = user.getLevel();
-            if (level > 5){
-                level = 5;
+            if (level > getMaxUserLevel()){
+                level = getMaxUserLevel();
             }
             List<String> taskList = taskMapper.getTaskNameByUserLevel(level);
             System.out.print("你可以完成的任务有：");
@@ -172,6 +177,15 @@ public class UserServiceImpl implements UserService {
             }
         }
         return finishedTaskNames;
+    }
+
+    public int getMaxUserLevel(){
+        if (redisService.getValue("maxUserLevel") != null){
+            return Integer.parseInt(redisService.getValue("maxUserLevel"));
+        }else {
+            redisService.setValue("maxUserLevel", String.valueOf(taskMapper.getMaxTaskLevel()));
+        }
+        return taskMapper.getMaxTaskLevel();
     }
 
 }
