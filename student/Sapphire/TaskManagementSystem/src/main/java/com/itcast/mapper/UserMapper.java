@@ -37,4 +37,7 @@ public interface UserMapper {
 
     @Select("select time from task where task_name = #{taskName}")
     int getTimeByTaskName(@Param("taskName") String taskName);
+
+    @Update("update user set level = level +1 where id = #{userId}")
+    void updateLevel(int userId);
 }

@@ -2,6 +2,7 @@ package com.itcast.controller;
 
 import com.itcast.pojo.User;
 import com.itcast.service.TaskService;
+import com.itcast.service.UpdProgress.UdpProgress;
 import com.itcast.service.UserService;
 import com.itcast.service.UserService2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class UserController {
     private TaskService taskService;
     @Autowired
     private UserService2 userService2;
+    @Autowired
+    private UdpProgress udpProgress;
 
     /**
      * 用户登录验证
@@ -46,8 +49,8 @@ public class UserController {
      * 多个用户轮流完成任务并记录任务的完成进度，用户升级、获得奖励等
      */
     @GetMapping
-    public void multiUserFinishTask() {
-        userService.multiUserFinishTask();
+    public void multiUserFinishTask() throws InterruptedException {
+        udpProgress.showAndChooseTask();
     }
 
     /**

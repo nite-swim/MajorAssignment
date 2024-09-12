@@ -3,6 +3,7 @@ package com.itcast.mapper;
 import com.itcast.pojo.Task;
 import com.itcast.pojo.TaskInstance;
 import com.itcast.pojo.TaskUserLevel;
+import com.itcast.pojo.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public interface TaskMapper {
     @Update("update user set red_pocket = red_pocket + #{money} where id = #{userId}")
     void updateRedPocket(@Param("money") int money,@Param("userId") int userId);
 
-    @Select("select task.task_name from task where user_level = #{userLevel};")
+    @Select("select task_userlevel.task_name from task_userlevel where user_level = #{userLevel};")
     List<String> getTaskNameByUserLevel(int userLevel);
 
     @Select("select * from task where task_name = #{taskName}")
@@ -63,4 +64,10 @@ public interface TaskMapper {
 
     @Select("select max(distinct (user_level)) from task;")
     int getMaxTaskLevel();
+
+    @Insert("insert into task_instance (user_id, task_id, task_name, progress) values (#{userId}, #{taskId}, #{taskName}, #{progress})")
+    void insertTaskInstance(TaskInstance taskInstance);
+
+    @Update("update task_instance set progress = 0 where user_id = #{userId} and task_id = #{taskId};")
+    void cleanProgress(Integer userId, Integer taskId);
 }

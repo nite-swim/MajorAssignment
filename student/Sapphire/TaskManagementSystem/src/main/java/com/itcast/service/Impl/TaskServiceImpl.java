@@ -2,7 +2,9 @@ package com.itcast.service.Impl;
 
 import com.itcast.mapper.TaskMapper;
 import com.itcast.pojo.Task;
+import com.itcast.pojo.TaskInstance;
 import com.itcast.pojo.TaskUserLevel;
+import com.itcast.pojo.User;
 import com.itcast.service.RedisService;
 import com.itcast.service.TaskService;
 import jakarta.annotation.Resource;
@@ -25,6 +27,8 @@ public class TaskServiceImpl implements TaskService {
     private RedisTemplate<String, TaskUserLevel> redisTemplate;
     @Resource
     private RedisService<String,String> redisService;
+    @Autowired
+    private User user;
 
     /**
      * 根据任务id查询对应的用户等级
@@ -42,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * 根据用户id给用户升级
+     * 根据用户id给用户升级(Redis)
      * @param id
      */
     public void updateUserLevelById(Integer id) {
@@ -195,5 +199,19 @@ public class TaskServiceImpl implements TaskService {
             redisService.setValue("maxUserLevel", String.valueOf(taskMapper.getMaxTaskLevel()));
         }
         return taskMapper.getMaxTaskLevel();
+    }
+
+    public Task getTaskByName(String taskName){
+        return taskMapper.getTaskByTaskName(taskName);
+    }
+
+    @Override
+    public void insertTaskInstance(TaskInstance taskInstance){
+        taskMapper.insertTaskInstance(taskInstance);
+    }
+
+    @Override
+    public void cleanProgress(Integer userId, Integer taskId) {
+        taskMapper.cleanProgress(userId, taskId);
     }
 }

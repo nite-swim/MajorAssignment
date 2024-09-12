@@ -3,16 +3,15 @@ package com.itcast.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 
+@Repository
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskInstance implements Serializable {
-    private int id;
-    private int userId;
-    private int taskId;
-    private String taskName;
-    private int progress;
+public class UidAndTid implements Serializable {
+    private Integer Uid;
+    private Integer Tid;
 }

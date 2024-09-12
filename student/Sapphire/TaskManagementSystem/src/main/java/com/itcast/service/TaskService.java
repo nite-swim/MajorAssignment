@@ -1,6 +1,7 @@
 package com.itcast.service;
 
 import com.itcast.pojo.Task;
+import com.itcast.pojo.TaskInstance;
 import com.itcast.pojo.TaskUserLevel;
 import com.itcast.pojo.User;
 
@@ -14,4 +15,8 @@ public interface TaskService {
     TaskUserLevel getTaskInfoById(Integer taskId);
 
     String addTask(Task task);
+
+    void insertTaskInstance(TaskInstance taskInstance);
+
+    void cleanProgress(Integer userId, Integer taskId);
 }

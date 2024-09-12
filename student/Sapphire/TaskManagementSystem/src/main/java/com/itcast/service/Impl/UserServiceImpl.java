@@ -29,11 +29,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TaskServiceImpl taskServiceImpl;
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-    @Autowired
     private RewardMapper rewardMapper;
     @Resource
     private RedisService<String,String> redisService;
+    @Autowired
+    private Task task;
 
     @Override
     public User getUserByName(String username) {
@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void multiUserFinishTask() {
         while (true) {
+            //展示任务列表
             System.out.println("请输入用户名：");
             Scanner scanner = new Scanner(System.in);
             String username = scanner.nextLine();
@@ -57,6 +58,7 @@ public class UserServiceImpl implements UserService {
                 System.out.print((taskList.indexOf(taskName) + 1) + "." + taskName);
             }
             System.out.println();
+            //选择任务
             System.out.print("请输入序号选择任务：GO");
             int command = scanner.nextInt();
             if (command < 1 || command > taskList.size()) {
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
      * @param task
      * @return
      */
-    private Integer getCurrentProgress(User user, Task task) {
+     public Integer getCurrentProgress(User user, Task task) {
         int userId = user.getId();
         int taskId = task.getId();
         Integer currentProgress = userMapper.getTaskInstanceProgress(userId, taskId);
@@ -100,8 +102,9 @@ public class UserServiceImpl implements UserService {
      * @param task
      * @param user
      */
-    private void progressRecord(Task task, User user) {
+    public void progressRecord(Task task, User user) {
         int userId = user.getId();
+        System.out.println("请输入：");
         Scanner scanner = new Scanner(System.in);
         int taskId = task.getId();
         String taskName = task.getTaskName();
@@ -115,7 +118,7 @@ public class UserServiceImpl implements UserService {
                     if (userMapper.getTaskInstanceProgress(userId, taskId) == task.getTime()){
                         System.out.println("该任务已完成");
                         //升级、奖励
-                        taskMapper.updateLevel(userId);
+                        updateLevel(userId);
                         taskServiceImpl.updateUserLevelById(userId);
                         userGainReward(user, task);
                     }
@@ -148,7 +151,7 @@ public class UserServiceImpl implements UserService {
      * @param user
      * @param task
      */
-    void userGainReward(User user, Task task) {
+    public void userGainReward(User user, Task task) {
         String taskName = task.getTaskName();
         Reward reward = rewardMapper.getRewardByTaskName(taskName);
         int rewardGold = reward.getRewardGold();
@@ -186,6 +189,10 @@ public class UserServiceImpl implements UserService {
             redisService.setValue("maxUserLevel", String.valueOf(taskMapper.getMaxTaskLevel()));
         }
         return taskMapper.getMaxTaskLevel();
+    }
+
+    public void updateLevel(int userId){
+        userMapper.updateLevel(userId);
     }
 
 }

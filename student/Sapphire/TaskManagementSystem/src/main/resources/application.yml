@@ -30,3 +30,10 @@ mybatis:
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
+
+#rocketmq
+rocketmq:
+  name-server: 192.168.220.129:9876
+  producer:
+    group: task-progress-update-producer-group
+    send-message-timeout: 30000
